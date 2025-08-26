@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opera Browser</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .browser-container {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 896px;
+            background: #111827;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #374151;
+        }
+
+        .header-bar {
+            height: 3.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 100;
+            border-bottom: 1px solid #374151;
+        }
+
+        .opera-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .opera-logo i {
+            font-size: 1.25rem;
+            animation: pulse 2s infinite;
+        }
+
+        .opera-logo span {
+            font-size: 1.125rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 0.875rem 1.25rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            border: 1px solid #374151;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .search-bar:focus-within {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-bar i {
+            color: #3b82f6;
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            placeholder-color: #9ca3af;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .currency-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .currency-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: space-between;
+        }
+
+        .currency-card {
+            flex: 1;
+            min-width: 70px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .currency-card:hover {
+            transform: translateY(-0.25rem);
+            box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.2);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+
+        .currency-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6 0%, #9333ea 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .currency-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .currency-symbol {
+            font-size: 1.25rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .currency-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+        }
+
+        .currency-value {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .add-site-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem;
+            border: 1px solid #374151;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-site-section:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-0.25rem);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.2);
+        }
+
+        .add-site-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .add-site-content {
+            flex: 1;
+        }
+
+        .add-site-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .add-site-description {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .apps-grid {
+            margin-bottom: 1.75rem;
+        }
+
+        .apps-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+        }
+
+        .app-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.05);
+        }
+
+        .app-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.625rem;
+            color: white;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-icon:hover {
+            transform: translateY(-0.25rem);
+            box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.2);
+            border-color: rgba(147, 51, 234, 0.3);
+        }
+
+        .app-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .app-icon:hover::after {
+            opacity: 0.1;
+        }
+
+        .app-name {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .bottom-nav {
+            height: 3.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #374151;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            color: #ef4444;
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .menu-popup {
+            position: absolute;
+            top: 3.5rem;
+            right: 1rem;
+            width: 280px;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            border: 1px solid #374151;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .menu-popup.active {
+            display: block;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #374151;
+        }
+
+        .menu-title {
+            font-weight: 600;
+            color: white;
+        }
+
+        .menu-close {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .menu-content {
+            padding: 0.5rem;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .menu-item i {
+            margin-right: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .menu-item span {
+            color: white;
+            font-weight: 500;
+        }
+
+        .tabs-interface {
+            position: absolute;
+            top: 3.5rem;
+            left: 0;
+            right: 0;
+            bottom: 3.5rem;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+        }
+
+        .tabs-interface.active {
+            display: flex;
+        }
+
+        .tabs-header {
+            padding: 1rem;
+            border-bottom: 1px solid #374151;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tabs-title {
+            font-weight: 600;
+            color: white;
+        }
+
+        .tabs-close {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tabs-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tabs-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .tab-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #374151;
+        }
+
+        .tab-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .tab-info {
+            flex: 1;
+        }
+
+        .tab-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .tab-url {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .tab-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-action {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .suspended-tabs {
+            margin-top: 1rem;
+        }
+
+        .suspended-tabs-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .suspended-tab-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #374151;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .suspended-tab-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .suspended-tab-info {
+            flex: 1;
+        }
+
+        .suspended-tab-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .suspended-tab-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-delay-100 { animation-delay: 0.1s; }
+        .animate-delay-200 { animation-delay: 0.2s; }
+        .animate-delay-300 { animation-delay: 0.3s; }
+        .animate-delay-400 { animation-delay: 0.4s; }
+        .animate-delay-500 { animation-delay: 0.5s; }
+        .animate-delay-600 { animation-delay: 0.6s; }
+        .animate-delay-700 { animation-delay: 0.7s; }
+        .animate-delay-800 { animation-delay: 0.8s; }
+        .animate-delay-900 { animation-delay: 0.9s; }
+        .animate-delay-1000 { animation-delay: 1s; }
+        .animate-delay-1100 { animation-delay: 1.1s; }
+        .animate-delay-1200 { animation-delay: 1.2s; }
+        .animate-delay-1300 { animation-delay: 1.3s; }
+        .animate-delay-1400 { animation-delay: 1.4s; }
+    </style>
+</head>
+<body>
+    <div class="browser-container">
+        <!-- Header Bar -->
+        <div class="header-bar">
+            <div class="opera-logo">
+                <i class="fas fa-compass"></i>
+                <span>Opera</span>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Google Search Bar -->
+            <div class="search-bar">
+                <i class="fab fa-google"></i>
+                <input type="text" placeholder="Search Google or type a URL">
+            </div>
+            
+            <!-- Currency & Crypto Cards -->
+            <div class="currency-section">
+                <!-- First Row: Traditional Currencies -->
+                <div class="currency-row">
+                    <div class="currency-card animate-fadeInUp animate-delay-100">
+                        <div class="currency-symbol">$</div>
+                        <div class="currency-name">USD</div>
+                        <div class="currency-value">1.00</div>
+                    </div>
+                    
+                    <div class="currency-card animate-fadeInUp animate-delay-200">
+                        <div class="currency-symbol">€</div>
+                        <div class="currency-name">EUR</div>
+                        <div class="currency-value">0.92</div>
+                    </div>
+                    
+                    <div class="currency-card animate-fadeInUp animate-delay-300">
+                        <div class="currency-symbol">£</div>
+                        <div class="currency-name">GBP</div>
+                        <div class="currency-value">0.79</div>
+                    </div>
+                </div>
+                
+                <!-- Second Row: Cryptocurrencies -->
+                <div class="currency-row">
+                    <div class="currency-card animate-fadeInUp animate-delay-400">
+                        <div class="currency-symbol">₿</div>
+                        <div class="currency-name">Bitcoin</div>
+                        <div class="currency-value">$43,250</div>
+                    </div>
+                    
+                    <div class="currency-card animate-fadeInUp animate-delay-500">
+                        <div class="currency-symbol">
+                            <i class="fab fa-ethereum"></i>
+                        </div>
+                        <div class="currency-name">Ethereum</div>
+                        <div class="currency-value">$2,280</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Site Section -->
+            <div class="add-site-section animate-fadeInUp animate-delay-600">
+                <div class="add-site-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="add-site-content">
+                    <div class="add-site-title">Add site</div>
+                    <div class="add-site-description">Add your favorite websites to quick access</div>
+                </div>
+            </div>
+            
+            <!-- Quick Apps Grid -->
+            <div class="apps-grid">
+                <div class="apps-container">
+                    <div class="app-item animate-fadeInUp animate-delay-700">
+                        <div class="app-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="app-name">GitHub</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-800">
+                        <div class="app-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="app-name">Telegram</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-900">
+                        <div class="app-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="app-name">WhatsApp</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-1000">
+                        <div class="app-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div class="app-name">Instagram</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-1100">
+                        <div class="app-icon">
+                            <span style="font-family: Arial, sans-serif; font-weight: bold; font-size: 1.5rem;">X</span>
+                        </div>
+                        <div class="app-name">X</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-1200">
+                        <div class="app-icon">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <div class="app-name">Facebook</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-1300">
+                        <div class="app-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <div class="app-name">YouTube</div>
+                    </div>
+                    
+                    <div class="app-item animate-fadeInUp animate-delay-1400">
+                        <div class="app-icon">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="app-name">Google</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-nav="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            
+            <div class="nav-item" data-nav="tabs" id="tabsNav">
+                <i class="fas fa-th-large"></i>
+                <span>Tabs</span>
+            </div>
+            
+            <div class="nav-item" data-nav="flow">
+                <i class="fas fa-stream"></i>
+                <span>Flow</span>
+            </div>
+            
+            <div class="nav-item" data-nav="menu" id="menuToggle">
+                <i class="fas fa-bars"></i>
+                <span>Menu</span>
+            </div>
+        </div>
+        
+        <!-- Menu Popup -->
+        <div class="menu-popup" id="menuPopup">
+            <div class="menu-header">
+                <div class="menu-title">Menu</div>
+                <div class="menu-close" id="menuClose">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="menu-content" id="menuContent">
+                <!-- Menu items will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Tabs Interface -->
+        <div class="tabs-interface" id="tabsInterface">
+            <div class="tabs-header">
+                <div class="tabs-title">Tabs</div>
+                <div class="tabs-close" id="tabsClose">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="tabs-content">
+                <div id="activeTabs">
+                    <!-- Active tabs will be populated by JavaScript -->
+                </div>
+                <div class="suspended-tabs">
+                    <div class="suspended-tabs-title">Recently Closed</div>
+                    <div id="suspendedTabs">
+                        <!-- Suspended tabs will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let activeNav = 'home';
+        let menuOpen = false;
+        let menuPage = 1;
+        let tabsOpen = false;
+        let tabs = [];
+        let suspendedTabs = [];
+        let activeTabId = null;
+        let tabIdCounter = 1;
+
+        // Tab icons and colors
+        const tabIcons = ['fas fa-globe', 'fas fa-home', 'fas fa-star', 'fas fa-heart', 'fas fa-bolt', 'fas fa-fire'];
+        const tabColors = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+        ];
+
+        // Menu pages
+        const menuPages = [
+            {
+                items: [
+                    { icon: 'fas fa-moon', text: 'Night mode', disabled: false },
+                    { icon: 'fas fa-shield-alt', text: 'Ad blocking', disabled: false },
+                    { icon: 'fas fa-history', text: 'History', disabled: false },
+                    { icon: 'fas fa-search', text: 'Find in page', disabled: false },
+                    { icon: 'fas fa-save', text: 'Save', disabled: true },
+                    { icon: 'fas fa-bookmark', text: 'Saved pages', disabled: false },
+                    { icon: 'fas fa-user-secret', text: 'Incognito mode', disabled: false },
+                    { icon: 'fas fa-sync-alt', text: 'Refresh', disabled: false },
+                    { icon: 'fas fa-redo', text: 'Reload', disabled: false }
+                ]
+            },
+            {
+                items: [
+                    { icon: 'fas fa-bookmark', text: 'Bookmarks', disabled: false },
+                    { icon: 'fas fa-download', text: 'Downloads', disabled: false },
+                    { icon: 'fas fa-share', text: 'Share', disabled: false },
+                    { icon: 'fas fa-plus-square', text: 'Add bookmark', disabled: false },
+                    { icon: 'fas fa-desktop', text: 'Desktop site', disabled: false },
+                    { icon: 'fas fa-language', text: 'Translate', disabled: true }
+                ]
+            },
+            {
+                items: [
+                    { icon: 'fas fa-home', text: 'Add to home screen', disabled: false },
+                    { icon: 'fas fa-volume-up', text: 'Read aloud', disabled: false },
+                    { icon: 'fas fa-text-height', text: 'Text size', disabled: false },
+                    { icon: 'fas fa-palette', text: 'Theme', disabled: false },
+                    { icon: 'fas fa-font', text: 'Font', disabled: false },
+                    { icon: 'fas fa-cog', text: 'Settings', disabled: false }
+                ]
+            }
+        ];
+
+        // Tab management functions
+        function createNewTab() {
+            const tabId = `tab-${tabIdCounter}`;
+            const iconIndex = Math.floor(Math.random() * tabIcons.length);
+            const colorIndex = Math.floor(Math.random() * tabColors.length);
+            
+            const newTab = {
+                id: tabId,
+                title: `New Tab ${tabs.length + 1}`,
+                url: 'https://www.google.com',
+                icon: tabIcons[iconIndex],
+                color: tabColors[colorIndex],
+                createdAt: new Date()
+            };
+            
+            tabs.push(newTab);
+            activeTabId = tabId;
+            tabIdCounter++;
+            
+            updateTabsDisplay();
+        }
+
+        function closeTab(tabId) {
+            const tabIndex = tabs.findIndex(tab => tab.id === tabId);
+            if (tabIndex !== -1) {
+                const tab = tabs[tabIndex];
+                
+                // Move to suspended tabs
+                const suspendedTab = { ...tab, suspendedAt: new Date() };
+                suspendedTabs.unshift(suspendedTab);
+                
+                // Remove from active tabs
+                tabs = tabs.filter(t => t.id !== tabId);
+                
+                // If closing active tab, set new active tab
+                if (activeTabId === tabId) {
+                    activeTabId = tabs.length > 0 ? tabs[0].id : null;
+                }
+                
+                updateTabsDisplay();
+            }
+        }
+
+        function switchToTab(tabId) {
+            activeTabId = tabId;
+            updateTabsDisplay();
+        }
+
+        function restoreSuspendedTab(tabId) {
+            const tabIndex = suspendedTabs.findIndex(tab => tab.id === tabId);
+            if (tabIndex !== -1) {
+                const tab = suspendedTabs[tabIndex];
+                const { suspendedAt, ...restoredTab } = tab;
+                
+                tabs.unshift(restoredTab);
+                suspendedTabs = suspendedTabs.filter(t => t.id !== tabId);
+                activeTabId = tabId;
+                
+                updateTabsDisplay();
+            }
+        }
+
+        function deleteSuspendedTab(tabId) {
+            suspendedTabs = suspendedTabs.filter(tab => tab.id !== tabId);
+            updateTabsDisplay();
+        }
+
+        function formatTimeDifference(date) {
+            const now = new Date();
+            const diff = now.getTime() - date.getTime();
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (days > 0) {
+                return `${days} day${days > 1 ? 's' : ''} ago`;
+            } else if (hours > 0) {
+                return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            } else if (minutes > 0) {
+                return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            } else {
+                return 'Just now';
+            }
+        }
+
+        function updateTabsDisplay() {
+            const activeTabsContainer = document.getElementById('activeTabs');
+            const suspendedTabsContainer = document.getElementById('suspendedTabs');
+            
+            // Update active tabs
+            activeTabsContainer.innerHTML = '';
+            tabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = `tab-item ${tab.id === activeTabId ? 'active' : ''}`;
+                tabElement.innerHTML = `
+                    <div class="tab-icon" style="background: ${tab.color}">
+                        <i class="${tab.icon}"></i>
+                    </div>
+                    <div class="tab-info">
+                        <div class="tab-title">${tab.title}</div>
+                        <div class="tab-url">${tab.url}</div>
+                    </div>
+                    <div class="tab-actions">
+                        <div class="tab-action" onclick="closeTab('${tab.id}')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                `;
+                tabElement.addEventListener('click', (e) => {
+                    if (!e.target.closest('.tab-action')) {
+                        switchToTab(tab.id);
+                    }
+                });
+                activeTabsContainer.appendChild(tabElement);
+            });
+            
+            // Update suspended tabs
+            suspendedTabsContainer.innerHTML = '';
+            suspendedTabs.forEach(tab => {
+                const tabElement = document.createElement('div');
+                tabElement.className = 'suspended-tab-item';
+                tabElement.innerHTML = `
+                    <div class="tab-icon" style="background: ${tab.color}">
+                        <i class="${tab.icon}"></i>
+                    </div>
+                    <div class="suspended-tab-info">
+                        <div class="suspended-tab-title">${tab.title}</div>
+                        <div class="suspended-tab-time">${formatTimeDifference(tab.suspendedAt)}</div>
+                    </div>
+                    <div class="tab-actions">
+                        <div class="tab-action" onclick="restoreSuspendedTab('${tab.id}')">
+                            <i class="fas fa-redo"></i>
+                        </div>
+                        <div class="tab-action" onclick="deleteSuspendedTab('${tab.id}')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                `;
+                suspendedTabsContainer.appendChild(tabElement);
+            });
+        }
+
+        function updateMenuDisplay() {
+            const menuContent = document.getElementById('menuContent');
+            menuContent.innerHTML = '';
+            
+            const currentPage = menuPages[menuPage - 1];
+            currentPage.items.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = `menu-item ${item.disabled ? 'disabled' : ''}`;
+                menuItem.innerHTML = `
+                    <i class="${item.icon}"></i>
+                    <span>${item.text}</span>
+                `;
+                if (!item.disabled) {
+                    menuItem.addEventListener('click', () => {
+                        // Handle menu item click
+                        console.log(`Clicked: ${item.text}`);
+                    });
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            const menuPopup = document.getElementById('menuPopup');
+            menuPopup.classList.toggle('active', menuOpen);
+            
+            if (menuOpen) {
+                updateMenuDisplay();
+            }
+        }
+
+        function toggleTabs() {
+            tabsOpen = !tabsOpen;
+            const tabsInterface = document.getElementById('tabsInterface');
+            tabsInterface.classList.toggle('active', tabsOpen);
+            
+            if (tabsOpen) {
+                updateTabsDisplay();
+            }
+        }
+
+        function setActiveNav(nav) {
+            activeNav = nav;
+            
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.nav === nav);
+            });
+            
+            // Handle special navigation
+            if (nav === 'menu') {
+                toggleMenu();
+            } else if (nav === 'tabs') {
+                toggleTabs();
+            } else {
+                // Close menu and tabs if open
+                if (menuOpen) toggleMenu();
+                if (tabsOpen) toggleTabs();
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize with one tab
+            createNewTab();
+            
+            // Navigation items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    setActiveNav(item.dataset.nav);
+                });
+            });
+            
+            // Menu close button
+            document.getElementById('menuClose').addEventListener('click', toggleMenu);
+            
+            // Tabs close button
+            document.getElementById('tabsClose').addEventListener('click', toggleTabs);
+            
+            // Click outside to close
+            document.addEventListener('click', (e) => {
+                const menuPopup = document.getElementById('menuPopup');
+                const menuToggle = document.getElementById('menuToggle');
+                const tabsInterface = document.getElementById('tabsInterface');
+                const tabsNav = document.getElementById('tabsNav');
+                
+                if (menuPopup && !menuPopup.contains(e.target) && 
+                    menuToggle && !menuToggle.contains(e.target) && 
+                    menuOpen) {
+                    toggleMenu();
+                }
+                
+                if (tabsInterface && !tabsInterface.contains(e.target) && 
+                    tabsNav && !tabsNav.contains(e.target) && 
+                    tabsOpen) {
+                    toggleTabs();
+                    if (activeNav === 'tabs') {
+                        setActiveNav('home');
+                    }
+                }
+            });
+            
+            // Touch swipe for menu
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold && menuOpen) {
+                    if (diff > 0 && menuPage < 3) {
+                        menuPage++;
+                        updateMenuDisplay();
+                    } else if (diff < 0 && menuPage > 1) {
+                        menuPage--;
+                        updateMenuDisplay();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
